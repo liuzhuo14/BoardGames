@@ -200,13 +200,18 @@ class Game:
         # choose player number
         print('Choose your player ID: from 0 to %d' % (self.n_player-1))
         while True:
-            real_player = int(input())
-            if self.is_exit(real_player):
-                return -1
-            if real_player<0 or real_player>=self.n_player:
-                print('\tWrong, choose player ID in [0,%d]:' % (self.n_player-1))
+            real_player = input()
+            try:
+                real_player = int(real_player)
+            except ValueError:
+                print('Wrong, choose player ID in [0,%d]:' % (self.n_player-1))
             else:
-                break
+                if self.is_exit(real_player):
+                    return -1
+                if real_player<0 or real_player>=self.n_player:
+                    print('Wrong, choose player ID in [0,%d]:' % (self.n_player-1))
+                else:
+                    break
 
         assert real_player<self.n_player and real_player>=0, 'Error: Player ID should be in 0 to %d' % (self.n_player-1)
         print('You are P%d' % (real_player))
@@ -227,13 +232,18 @@ class Game:
                 if real_player==i:
                     print('\tPlay one card to start (0:flower, 1:skull):')
                     while True:
-                        your_card = int(input())
-                        if self.is_exit(your_card):
-                            return -1
-                        if your_card not in self.players[i].cards:
-                            print('\tWrong, play existing card:')
+                        your_card = input()
+                        try:
+                            your_card = int(your_card)
+                        except ValueError:
+                            print('\tWrong, play one card to start (0:flower, 1:skull):')
                         else:
-                            break
+                            if self.is_exit(your_card):
+                                return -1
+                            if your_card not in self.players[i].cards:
+                                print('\tWrong, play an existing card:')
+                            else:
+                                break
                     self.players[i].play_card(your_card)
                 else:
                     self.players[i].play_card()
@@ -264,25 +274,35 @@ class Game:
                         flower_num = len(self.players[real_player].cards) - skull_num
                         print('\t\tAdd one card (0:flower, 1:skull) (your cards: 0:%d, 1:%d):' % (flower_num, skull_num))
                         while True:
-                            your_card = int(input())
-                            if self.is_exit(your_card):
-                                return -1
-                            if your_card not in self.players[i].cards:
-                                print('\t\tWrong, add existing card:')
+                            your_card = input()
+                            try:
+                                your_card = int(your_card)
+                            except ValueError:
+                                print('\t\tWrong, add one card (0:flower, 1:skull):')
                             else:
-                                break
+                                if self.is_exit(your_card):
+                                    return -1
+                                if your_card not in self.players[i].cards:
+                                    print('\t\tWrong, add existing card:')
+                                else:
+                                    break
                     elif action_text=='pass':
                         action = 0
                     elif action_text=='bid':
                         print('\t\tYour bid number (%d ~ %d):' % (price+1, n_table_cards))
                         while True:
-                            action = int(input())
-                            if self.is_exit(action):
-                                return -1
-                            if action<=price or action>n_table_cards:
-                                print('\t\tWrong, should be in [%d,%d]:' % (price+1, n_table_cards))
+                            action = input()
+                            try:
+                                action = int(action)
+                            except ValueError:
+                                print('\t\tWrong, choose your bid number (%d ~ %d)' % (price+1, n_table_cards))
                             else:
-                                break
+                                if self.is_exit(action):
+                                    return -1
+                                if action<=price or action>n_table_cards:
+                                    print('\t\tWrong, should be in [%d,%d]:' % (price+1, n_table_cards))
+                                else:
+                                    break
                     else:
                         print()
                 else:
@@ -328,13 +348,18 @@ class Game:
                     if challenge_player==real_player:
                         print('\t\tChoose one other player to reveal from', players_with_card_stack)
                         while True:
-                            chosen_player = int(input())
-                            if self.is_exit(chosen_player):
-                                return -1
-                            if chosen_player not in players_with_card_stack:
-                                print('\t\tWrong, not available player card stack')
+                            chosen_player = input()
+                            try:
+                                chosen_player = int(chosen_player)
+                            except ValueError:
+                                print('\t\tWrong, Choose from', players_with_card_stack)
                             else:
-                                break
+                                if self.is_exit(chosen_player):
+                                    return -1
+                                if chosen_player not in players_with_card_stack:
+                                    print('\t\tWrong, not available player card stack')
+                                else:
+                                    break
                     else:
                         if ch_st == 'random':
                             chosen_player = np.random.choice(players_with_card_stack)
@@ -364,13 +389,18 @@ class Game:
                     flower_num = len(self.players[real_player].cards) - skull_num
                     print('\t\tDrop one card (0:flower, 1:skull) (your cards: 0:%d, 1:%d):' % (flower_num, skull_num))
                     while True:
-                        your_card = int(input())
-                        if self.is_exit(your_card):
-                            return -1
-                        if your_card not in self.players[i].cards:
-                            print('\t\tWrong, drop existing card:')
+                        your_card = input()
+                        try:
+                            your_card = int(your_card)
+                        except ValueError:
+                            print('\t\tWrong, drop one card (0:flower, 1:skull):')
                         else:
-                            break
+                            if self.is_exit(your_card):
+                                return -1
+                            if your_card not in self.players[i].cards:
+                                print('\t\tWrong, drop existing card:')
+                            else:
+                                break
                     leave = self.players[challenge_player].drop_card(your_card)
                 else:
                     leave = self.players[challenge_player].drop_card()
