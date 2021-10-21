@@ -53,6 +53,13 @@ class MarriageSystem(Enum):
 
 @unique
 class Event(Enum):
+    colder = 0
+    hotter = 1
+    death = 2
+    storm = 3
+    hit = 4
+    wander = 5
+    extend = 6
 
 @unique
 class DaughterName(Enum):
@@ -60,6 +67,13 @@ class DaughterName(Enum):
 @unique
 class Skill(Enum):
 
+@unique
+class PreyName(Enum):
+
+@unique
+class PreyType(Enum):
+    
+    
 class Area:
     def __init__(self, color):
         self.color = color
@@ -146,6 +160,14 @@ class Daughter:
         self.availableMorpheme = availabelMorphemeMapping[name]
         self.growDuration = {color:0 for color in self.availableMorpheme}
         self.husband = Elder(ElderName.husband)
+
+class Prey:
+    def __init__(self, name):
+        self.name = name
+        self.preyType = preyTypeMapping[name]
+        self.adaptation = name.value
+        self.freeze = freezeMapping[name]
+        self.condition = conditionMapping[name]
 
 class Player:
     def __init__(self, playerName, species, marriage):
