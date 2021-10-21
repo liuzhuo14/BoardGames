@@ -1,2 +1,2 @@
 # Skull Card
-AI for board game Endeavour: Skull Card
+AI for board game: Skull Card
