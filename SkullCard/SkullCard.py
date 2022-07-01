@@ -30,10 +30,13 @@ class Player:
         if card==None:
             if self.drop_strategy=='default':
                 card = 1 if len(self.cards)==2 else 0
-        self.cards.remove(card)
+        try: 
+            self.cards.remove(card)
+        except:
+            return 2
         if len(self.cards)<=0:
-            return True
-        return False
+            return 1
+        return 0
     
     def reveal_card(self):
         card = self.card_stack.pop()
@@ -156,6 +159,7 @@ class Game:
                     players_with_card_stack.remove(chosen_player)
                 if reveal==1: # challenge fail
                     success = False
+                    skull_player = chosen_player
                     break
                 price -= 1
             
@@ -177,10 +181,15 @@ class Game:
                     self.winner = self.players.keys[0]
             
             # next round
-            if challenge_player in self.players:
+            if success:
                 start_player = challenge_player
             else:
-                start_player = np.random.choice(list(self.players.keys()))
+                start_player = skull_player
+                if skull_player == challenge_player:
+                    while True:
+                        start_player = (start_player+1) % self.n_player
+                        if start_player in self.players.keys():
+                            break
             Round += 1
         
         print('Winner: P%d!' % (self.winner))
@@ -282,7 +291,7 @@ class Game:
                             else:
                                 if self.is_exit(your_card):
                                     return -1
-                                if your_card not in self.players[i].cards:
+                                if your_card not in self.players[real_player].cards:
                                     print('\t\tWrong, add existing card:')
                                 else:
                                     break
@@ -370,6 +379,7 @@ class Game:
                     players_with_card_stack.remove(chosen_player)
                 if reveal==1: # challenge fail
                     success = False
+                    skull_player = chosen_player
                     break
                 price -= 1
             
@@ -397,7 +407,7 @@ class Game:
                         else:
                             if self.is_exit(your_card):
                                 return -1
-                            if your_card not in self.players[i].cards:
+                            if your_card not in self.players[challenge_player].cards:
                                 print('\t\tWrong, drop existing card:')
                             else:
                                 break
@@ -407,15 +417,24 @@ class Game:
                 
                 if leave:
                     del self.players[challenge_player]
-                    print('\tP%d leave the game.' % (challenge_player))           
+                    print('\tP%d leave the game.' % (challenge_player))
+                    if challenge_player==real_player:
+                        print('You lose!')
+                        return self.winner
+                        
                 if len(self.players)==1:
                     self.winner = list(self.players.keys())[0]
             
             # next round
-            if challenge_player in self.players:
+            if success:
                 start_player = challenge_player
             else:
-                start_player = np.random.choice(list(self.players.keys()))
+                start_player = skull_player
+                if skull_player == challenge_player:
+                    while True:
+                        start_player = (start_player+1) % self.n_player
+                        if start_player in self.players.keys():
+                            break
             Round += 1
         
         print('Winner: P%d!' % (self.winner))
@@ -424,3 +443,4 @@ class Game:
         else:
             print('You lose!')
         return self.winner
+
